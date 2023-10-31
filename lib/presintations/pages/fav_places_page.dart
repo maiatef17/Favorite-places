@@ -118,7 +118,7 @@ class _FavouritePlacesPageState extends State<FavouritePlacesPage> {
         backgroundColor: Colors.black,
         onPressed: () async {
           await Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddPlacePage()));
+              context, MaterialPageRoute(builder: (context) => AddPlacePage(file: null,)));
           setState(() {});
         },
         child: const Icon(

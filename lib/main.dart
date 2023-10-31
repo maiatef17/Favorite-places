@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:favourite_places/data/authentication_remote_data_source.dart';
-import 'package:favourite_places/data/image_picker_.dart';
 import 'package:favourite_places/data/models/place.dart';
 import 'package:favourite_places/data/places_remote_data_source.dart';
 import 'package:favourite_places/presintations/bloc/authentication_bloc.dart';

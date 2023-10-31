@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Place {
-  final String image, name, discription, id, userId, address;
+  String? image;
+  final String name, discription, id, userId, address;
   final double latitude, longitude;
 
   Place(

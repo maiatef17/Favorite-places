@@ -26,7 +26,7 @@ class _FavPageInfoState extends State<FavPageInfo> {
         fit: StackFit.expand,
         children: [
           Image.network(
-            widget.place.image,
+            widget.place.image!,
             fit: BoxFit.cover,
           ),
           SizedBox(
@@ -34,21 +34,24 @@ class _FavPageInfoState extends State<FavPageInfo> {
           ),
           Positioned(
             bottom: 80,
-            left: 150,
-            right: 150,
+            left: 110,
+            right: 110,
             child: Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: Center(
-                  child: Text(
-                    (widget.place.address),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      ("Address: ${widget.place.address}"),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                  ],
                 )),
           ),
         ],

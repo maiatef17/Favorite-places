@@ -15,18 +15,16 @@ class StorageHelperImp extends StorageHelper {
     final uploadTask = storageRef
         .child('PlacesImages/${file.path.split('/').last}')
         .putFile(file);
-
-TaskSnapshot taskSnapshot = await uploadTask.whenComplete((){});
-      if (taskSnapshot.state == TaskState.running) {
-        final progress =
-            100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-        print('Upload is $progress% complete.');
-      } else if (taskSnapshot.state == TaskState.error) {
-        throw Exception("failed");
-      } else if (taskSnapshot.state == TaskState.success) {
-        imgUrl = await taskSnapshot.ref.getDownloadURL();
-      }
-  print(imgUrl);
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() {});
+    if (taskSnapshot.state == TaskState.running) {
+      print(
+          'progress: ${100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes)}');
+    } else if (taskSnapshot.state == TaskState.error) {
+      throw Exception("failed");
+    } else if (taskSnapshot.state == TaskState.success) {
+      imgUrl = await taskSnapshot.ref.getDownloadURL();
+    }
+    print(imgUrl);
     return imgUrl;
   }
 }
