@@ -1,14 +1,16 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:favourite_places/data/data%20source/place_local_data_source/place_local_data_source.dart';
-import 'package:favourite_places/data/data%20source/user_local_data_source/user_local_data_source.dart';
 import 'package:favourite_places/data/models/place.dart';
+import 'package:favourite_places/presintations/bloc/authentication_bloc.dart';
+import 'package:favourite_places/presintations/bloc/place_bloc.dart';
 import 'package:favourite_places/presintations/pages/add_place_page.dart';
 import 'package:favourite_places/presintations/pages/fav_page_info.dart';
-import 'package:favourite_places/presintations/pages/sign_in_page%20copy.dart';
+
+import 'package:favourite_places/presintations/pages/sign_up_page.dart';
 import 'package:favourite_places/presintations/widgets/show_fav_places_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FavouritePlacesPage extends StatefulWidget {
   const FavouritePlacesPage({
@@ -21,15 +23,20 @@ class FavouritePlacesPage extends StatefulWidget {
 
 class _FavouritePlacesPageState extends State<FavouritePlacesPage> {
   @override
+  void initState() {
+    super.initState();
+    context.read<PlaceBloc>().add(GetPlace());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
           child: Container(
+              padding: EdgeInsets.all(16),
               color: Colors.grey[900],
               child: ListView(children: [
-                SizedBox(
-                  height: 100,
-                ),
+                SizedBox(height: 64),
                 Text(
                   tr('Languages'),
                   style: TextStyle(
@@ -59,26 +66,14 @@ class _FavouritePlacesPageState extends State<FavouritePlacesPage> {
                       tr('English'),
                       style: TextStyle(color: Colors.white),
                     )),
-                ElevatedButton(
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                  onPressed: () {
-                    PlaceLocalDSImpl().clearAllPlaces();
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FavouritePlacesPage()));
-                  },
-                  child: Text(
-                    tr('Clear All Places'),
-                    style: TextStyle(color: Colors.white),
-                  ),
+                SizedBox(
+                  height: 540,
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    UserLocalDSImpl().logOut();
+                    context.read<AuthenticationBloc>().add(SignOutEvent());
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => SignInPage()));
+                        MaterialPageRoute(builder: (context) => const SignUpPage()));
                   },
                   style:
                       ElevatedButton.styleFrom(backgroundColor: Colors.black),
@@ -97,34 +92,35 @@ class _FavouritePlacesPageState extends State<FavouritePlacesPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FutureBuilder(
-            future: PlaceLocalDSImpl().getPlace(),
-            builder: (context, snapshot) {
-              print(snapshot.data);
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              return ListView.builder(
-                itemBuilder: (context, i) => Padding(
-                  padding: EdgeInsets.only(bottom: 10.0),
-                  child: ShowFavPlaces(
-                    place: snapshot.data![i],
-                  ),
-                ),
-                itemCount: snapshot.data!.length,
-              );
-            }),
+      body: BlocBuilder<PlaceBloc, PlaceState>(
+        builder: (context, state) {
+          return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView(
+                children: [
+                  if (state is PlaceLoadingState) CircularProgressIndicator(),
+                  if (state is PlaceErrorState) Text('Error'),
+                  if (state is PlaceLoaded)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: state.places.length,
+                          itemBuilder: (context, i) =>
+                              ShowFavPlaces(place: state.places[i])),
+                    )
+                ],
+              ));
+        },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.black,
         onPressed: () async {
           await Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddPlace()));
+              context, MaterialPageRoute(builder: (context) => AddPlacePage()));
           setState(() {});
         },
-        tooltip: 'Increment',
         child: const Icon(
           Icons.add,
           color: Colors.white,

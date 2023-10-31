@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:favourite_places/data/models/place.dart';
 import 'package:flutter/material.dart';
+import 'package:google_static_maps_controller/google_static_maps_controller.dart';
 
 class FavPageInfo extends StatefulWidget {
   const FavPageInfo({Key? key, required this.place}) : super(key: key);
@@ -24,9 +25,31 @@ class _FavPageInfoState extends State<FavPageInfo> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/images/2.png',
+          Image.network(
+            widget.place.image,
             fit: BoxFit.cover,
+          ),
+          SizedBox(
+            height: 80,
+          ),
+          Positioned(
+            bottom: 80,
+            left: 150,
+            right: 150,
+            child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Center(
+                  child: Text(
+                    (widget.place.address),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )),
           ),
         ],
       ),

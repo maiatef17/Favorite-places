@@ -1,26 +1,43 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Place {
-  final String name;
-  // final String location;
-  final int id;
-  //final File image;
+  final String image, name, discription, id, userId, address;
+  final double latitude, longitude;
+
   Place(
-    this.id,
-    this.name,
-  );
+      {required this.image,
+      required this.name,
+      required this.discription,
+      required this.id,
+      required this.userId,
+      required this.address,
+      required this.latitude,
+      required this.longitude});
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
+      "image": image,
       "name": name,
+      "discription": discription,
+      "id": id,
+      "userId": userId,
+      "address": address,
+      "latitude": latitude,
+      "longitude": longitude,
     };
   }
 
-  factory Place.fromMap(Map m) {
+  factory Place.fromDoc(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
     return Place(
-      m["id"],
-      m["name"],
-    );
+        id: doc.id,
+        image: doc.data()['image'],
+        name: doc.data()['name']!,
+        discription: doc.data()['discription'],
+        userId: doc.data()['userId'],
+        address: doc.data()['address'],
+        latitude: doc.data()['latitude'],
+        longitude: doc.data()['longitude']);
   }
 }
